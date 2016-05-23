@@ -1,12 +1,216 @@
+/*
+ * Date : 2016.05.24
+ * Subject : Programming_Project
+ * Author : Suchang Ko
+ * Project : Building Simulation
+ */
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main(){
+#define TRUE 1
+#define FALSE 0
 
-	return 0;
+typedef struct _space {
+    char *user; // 주민
+    struct _space *space_next; // 다음 노드
+} space;
+
+typedef space *space_ptr; // Space Pointer
+
+typedef struct _room {
+    int room_id; // 방의 호수
+    int space_count; // 방의 칸수
+    struct _room *room_next; // 다음 노드
+    space_ptr space_head; // 칸 리스트
+} room;
+
+typedef room *room_ptr; // Room Ponter
+
+typedef struct _floor {
+    int floor_id; // 층
+    int room_count; // 총 방 수
+    struct _floor *floor_next; // 다음 노드
+    room_ptr room_head;
+} floor;
+
+typedef floor *floor_ptr; // Floor Pointer
+
+typedef struct _building {
+    int floor_count; // 총 층 수
+    floor_ptr floor_head;
+} building;
+
+void init(building *building_ptr) {
+    building_ptr->floor_count = 0;
+    building_ptr->floor_head = NULL;
+}
+
+int input_cmd() {
+    while (1) {
+        int cmd = 0;
+        printf("\n기능을 선택하세요 [메인]\n");
+        printf("[1] 건물 확장 (층,방) \n");
+        printf("[2] View 변환\n");
+        printf("[3] 방별 칸 변환\n");
+        printf("[4] 칸 별 사람 이름 변환\n");
+        printf("[5] 종료\n");
+        scanf("%d", &cmd);
+        if (cmd >= 1 && cmd <= 5) {
+            return cmd;
+        } else {
+            printf("다시 입력해 주세요.\n");
+        }
+    }
+}
+
+int input_extend_cmd() {
+    while (1) {
+        int cmd = 0;
+        printf("\n기능을 선택하세요 [메인]-[건물확장]\n");
+        printf("[1] 층 확장\n");
+        printf("[2] 방 확장\n");
+        printf("[3] 뒤로가기\n");
+        scanf("%d", &cmd);
+        if (cmd >= 1 && cmd <= 3) {
+            return cmd;
+        } else {
+            printf("다시 입력해 주세요.\n");
+        }
+    }
+}
+
+void change_space() {
+
+}
+
+void add_room(building *building_list,int msg) {
+    if(building_list->floor_count < 1){
+            printf("생성된 층이 없습니다.\n");
+    }else{
+        int target_floor;
+        if(msg == TRUE){
+            while(1){
+                printf("[현재 층 수] : %d 층\n",building_list->floor_count);
+                printf("몇 층의 방을 늘리겠습니까?\n");
+                scanf("%d",&target_floor);
+                if(target_floor >= 0 && target_floor <= building_list->floor_count){
+                    break;
+                }else{
+                    printf("현재 층 수를 초과하였습니다. 다시 입력해 주세요.\n");
+                }
+            }
+        }else{
+            target_floor = building_list->floor_count;
+        }
+        
+
+        int index = 0;
+        floor_ptr tmp_floor_ptr = building_list->floor_head;
+        for(index = 0; index < building_list->floor_count; index++){
+            if(target_floor == tmp_floor_ptr->floor_id){ 
+                room_ptr new_room_ptr = (room*)malloc(sizeof(room));
+                new_room_ptr->room_id = ++tmp_floor_ptr->room_count;
+                new_room_ptr->space_count = 0;
+                new_room_ptr->room_next = tmp_floor_ptr->room_head;
+                tmp_floor_ptr->room_head = new_room_ptr;
+                // 방의 기본 성질
+                // 각 방에는 1인 이상 살고 있어야 한다.
+                char *user_name;
+                 if(msg == FALSE){
+                    char *tmp_name = "Suchang";
+                    user_name = (char*)malloc(strlen(tmp_name)+1);
+                    strcpy(user_name,tmp_name);
+                    //sprintf(user_name,tmp_name); 
+
+                }else{
+                    printf("입주자 이름을 입력하세요.\n");
+                    scanf("%s",&user_name);
+                }
+                
+                space_ptr new_space_ptr = (space*)malloc(sizeof(space));
+                new_space_ptr->user = (char*)malloc(strlen(&user_name+1));
+                if(msg)
+                    strcpy(new_space_ptr->user,&user_name);
+                else
+                    strcpy(new_space_ptr->user,user_name);
+                new_space_ptr->space_next = new_room_ptr->space_head;
+                new_room_ptr->space_head = new_space_ptr;
+                new_room_ptr->space_count++;
+                if(msg == TRUE)
+                    printf("입주자 : %s\n",new_space_ptr->user );
+                break;
+            }
+            tmp_floor_ptr = tmp_floor_ptr->floor_next;
+        }
+        if(msg == TRUE)
+            printf("%d 층의 방 수 : %d개\n",target_floor,tmp_floor_ptr->room_count );
+    }
+}
+
+void add_floor(building *building_list,int msg) {
+    floor_ptr new_floor_ptr = (floor*)malloc(sizeof(floor));
+    new_floor_ptr->floor_id = ++building_list->floor_count;
+    new_floor_ptr->room_count = 0;
+    new_floor_ptr->floor_next = building_list->floor_head;
+    building_list->floor_head = new_floor_ptr;
+    if(msg){
+        printf("추가 완료\n");
+        printf("현재 층 수 : %d층\n",building_list->floor_count);
+    }
+}
+
+
+int main() {
+    building *building_list = (building*)malloc(sizeof(building));
+    init(building_list);
+    add_floor(building_list,FALSE);
+    add_room(building_list,FALSE);
+    add_room(building_list,FALSE);
+    add_room(building_list,FALSE);
+
+    while (1){
+        switch (input_cmd()) {
+            case 1: { // [1] 건물 확장
+                switch (input_extend_cmd()) {
+                    case 1: { // [1] 층 확장
+                        add_floor(building_list,TRUE);
+                        break;
+                    }
+                    case 2: { // [2] 방 확장
+                        add_room(building_list,TRUE);
+                        break;
+                    }
+                }
+                break;
+            }
+            case 2: { // [2] View 변환
+
+                break;
+            }
+            case 3: { // [3] 방 별 칸 변환
+
+                break;
+            }
+            case 4: { // [4] 칸 별 사람 이름 변환
+
+                break;
+            }
+            case 5: { // [5] 종료
+                printf("\n프로그램을 종료합니다.\n");
+                return 0;
+                break;
+            }
+        }
+    }
+
+    return 0;
 }
 
 
 /*
+
 단층에 방 3개 짜리 건물로 시작하여 높고 넓은 건물을 만드는 것을 목표로 한다.
 건물은 다음과 같은 성질을 가진다.
 - 건물은 층을 늘릴 수도, 방을 늘리는 것도 가능하다.
@@ -29,6 +233,7 @@ int main(){
 전체 정보 조회에서 방 안의 사람까지 보여주기
 사는 사람 위치 검색
 로그 기록
+
 TTS(Text to Speach)
 
 */
