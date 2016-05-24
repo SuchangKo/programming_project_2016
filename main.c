@@ -81,7 +81,76 @@ int input_extend_cmd() {
     }
 }
 
-void change_space() {
+int input_view_cmd() {
+    while (1) {
+        int cmd = 0;
+        printf("\n기능을 선택하세요 [메인]-[View 변환]\n");
+        printf("[1] 건물 전체 View\n");
+        printf("[2] 방 내부 View\n");
+        printf("[3] 뒤로가기\n");
+        scanf("%d", &cmd);
+        if (cmd >= 1 && cmd <= 3) {
+            return cmd;
+        } else {
+            printf("다시 입력해 주세요.\n");
+        }
+    }
+}
+
+void view_building(building *building_list, int msg) {
+    printf("\n===============================\n");
+    int floor_index,room_index,space_index;
+    int total_room_count = 0,total_space_count = 0,total_user_count = 0;
+    floor_ptr tmp_floor_ptr = building_list->floor_head;
+    for(floor_index = 0; floor_index < building_list->floor_count; floor_index++){
+        total_room_count += tmp_floor_ptr->room_count;
+        //printf("a : %d %d\n",tmp_floor_ptr->room_count,&tmp_floor_ptr->room_count );
+        room_ptr tmp_room_ptr = tmp_floor_ptr->room_head;
+        for(room_index = 0; room_index < tmp_floor_ptr->room_count; room_index++){
+            space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
+            total_space_count += tmp_room_ptr->space_count;
+            //printf("%d층-",tmp_floor_ptr->floor_id);
+            //printf("%d호\n",tmp_room_ptr->room_id);
+            //printf("b : %d %d\n",tmp_room_ptr->space_count,&tmp_room_ptr->space_count);
+            printf("%d%02d호",tmp_floor_ptr->floor_id, tmp_room_ptr->room_id);
+            for(space_index = 0; space_index < tmp_room_ptr->space_count; space_index++){
+                printf("%s\n",tmp_space_ptr->user );
+                if(strlen(tmp_space_ptr->user) > 0){
+                    total_user_count++; 
+                }
+                tmp_space_ptr = tmp_space_ptr->space_next;    
+            }
+            tmp_room_ptr = tmp_room_ptr->room_next;
+        }
+        tmp_floor_ptr = tmp_floor_ptr->floor_next;
+    }
+    printf("현재 거주자 수 : %d명\n",total_user_count );
+    printf("현재 공간  수 : %d명\n",total_space_count );
+    printf("현재   방  수 : %d명\n",total_room_count );
+    printf("\n===============================\n");
+}
+
+void change_space(building *building_list) {
+    int target_floor, target_room;
+    printf("[현재 층 수] : %d 층\n",building_list->floor_count);
+    printf("몇 층 입니까? \n");
+    scanf("%d",&target_floor);
+    floor_ptr tmp_floor_ptr = building_list->floor_head;
+    int index = 0;
+    for(index = 0; index < building_list->floor_count; index++){
+        if(target_floor == tmp_floor_ptr->floor_id){
+            break;
+        }
+        tmp_floor_ptr = tmp_floor_ptr->floor_next;
+    }
+    printf("몇 호 입니까?\n");
+    scanf("%d",&target_room);
+    for(index = 0; index < tmp_floor_ptr->room_count; index++){
+        if(target_floor == tmp_floor_ptr->floor_id){
+            break;
+        }
+        tmp_floor_ptr = tmp_floor_ptr->floor_next;
+    }
 
 }
 
@@ -122,8 +191,6 @@ void add_room(building *building_list,int msg) {
                     char *tmp_name = "Suchang";
                     user_name = (char*)malloc(strlen(tmp_name)+1);
                     strcpy(user_name,tmp_name);
-                    //sprintf(user_name,tmp_name); 
-
                 }else{
                     printf("입주자 이름을 입력하세요.\n");
                     scanf("%s",&user_name);
@@ -171,6 +238,7 @@ int main() {
     add_room(building_list,FALSE);
 
     while (1){
+        view_building(building_list,TRUE);
         switch (input_cmd()) {
             case 1: { // [1] 건물 확장
                 switch (input_extend_cmd()) {
