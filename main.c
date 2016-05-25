@@ -443,19 +443,20 @@ void change_space(building *building_list) {
         int add_count = target_count - tmp_room_ptr->space_count;
         for (count = 0; count < add_count; count++) {
             char *user_name;
-            /*
+            
             printf("입주자 이름을 입력하세요.\n");
             scanf("%s", &user_name);
-            */
+            
+            /*
             char *tmp_name = "\0";
             user_name = (char *) malloc(strlen(tmp_name) + 1);
             strcpy(user_name, tmp_name);
-
+            */
             space_ptr new_space_ptr = (space *) malloc(sizeof(space));
             new_space_ptr->user = (char *) malloc(strlen(&user_name + 1));
 
-            //strcpy(new_space_ptr->user, &user_name);
-            strcpy(new_space_ptr->user, user_name);
+            strcpy(new_space_ptr->user, &user_name);
+            //strcpy(new_space_ptr->user, user_name);
 
             new_space_ptr->space_next = tmp_room_ptr->space_head;
             tmp_room_ptr->space_head = new_space_ptr;
