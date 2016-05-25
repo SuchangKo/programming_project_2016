@@ -99,6 +99,8 @@ int input_view_cmd() {
 
 void view_building(building *building_list, int msg) {
     printf("\n===============================\n");
+    int tmp[100][2] = {0, };
+    int i;
     int floor_index, room_index, space_index;
     int total_room_count = 0, total_space_count = 0, total_user_count = 0;
     floor_ptr tmp_floor_ptr = building_list->floor_head;
@@ -108,9 +110,10 @@ void view_building(building *building_list, int msg) {
         for (room_index = 0; room_index < tmp_floor_ptr->room_count; room_index++) {
             space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
             total_space_count += tmp_room_ptr->space_count;
-            printf("\n%d%02d호", tmp_floor_ptr->floor_id, tmp_room_ptr->room_id);
+            tmp[tmp_floor_ptr->floor_id][0] = tmp_room_ptr->room_id;
+            tmp[tmp_floor_ptr->floor_id][1] = tmp_room_ptr->space_count;
             for (space_index = 0; space_index < tmp_room_ptr->space_count; space_index++) {
-                printf(" %d칸 : %s ", (space_index + 1), tmp_space_ptr->user);
+                //printf(" %d칸 : %s ", (space_index+1),tmp_space_ptr->user);
                 if (strlen(tmp_space_ptr->user) > 0) {
                     total_user_count++;
                 }
@@ -118,6 +121,18 @@ void view_building(building *building_list, int msg) {
             }
             tmp_room_ptr = tmp_room_ptr->room_next;
         }
+        for(i = 1; i <= tmp_floor_ptr->room_count; i++) {
+            printf("╠═══════════╣");
+        }
+        printf("\n");
+        for(i = 1; i <= tmp_floor_ptr->room_count; i++) {
+            printf("║%d%02d호 : %d명║", tmp_floor_ptr->floor_id, tmp[tmp_floor_ptr->floor_id][0], tmp[tmp_floor_ptr->floor_id][1]);
+        }
+        printf("\n");
+        for(i = 1; i <= tmp_floor_ptr->room_count; i++) {
+            printf("╠═══════════╣");
+        }
+        printf("\n");
         tmp_floor_ptr = tmp_floor_ptr->floor_next;
     }
 
