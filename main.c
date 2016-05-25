@@ -595,6 +595,7 @@ int main() {
     add_room(building_list, FALSE);
 
     while (1) {
+        fflush(fp);
         if (view_flag)
             view_building(building_list, TRUE);
         else {
