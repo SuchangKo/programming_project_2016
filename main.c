@@ -110,7 +110,7 @@ void view_building(building *building_list, int msg) {
             total_space_count += tmp_room_ptr->space_count;
             printf("\n%d%02d호", tmp_floor_ptr->floor_id, tmp_room_ptr->room_id);
             for (space_index = 0; space_index < tmp_room_ptr->space_count; space_index++) {
-                printf(" %d칸 : %s ", (space_index+1),tmp_space_ptr->user);
+                printf(" %d칸 : %s ", (space_index + 1), tmp_space_ptr->user);
                 if (strlen(tmp_space_ptr->user) > 0) {
                     total_user_count++;
                 }
@@ -224,7 +224,7 @@ void change_space(building *building_list) {
     }
 
     while (1) {
-        printf("몇 칸 입니까? 1 ~ 4 호 [현재] : %d 칸 \n", tmp_room_ptr->space_count);
+        printf("몇 칸 입니까? 1 ~ 4 칸 [현재] : %d칸 \n", tmp_room_ptr->space_count);
         scanf("%d", &target_count);
         if (target_count >= 1 && target_count <= 4) {
             break;
@@ -235,7 +235,7 @@ void change_space(building *building_list) {
     if (tmp_room_ptr->space_count == target_count) {
         printf("그대로 유지합니다.\n");
     } else if (tmp_room_ptr->space_count > target_count) {
-        printf("[제거] %d 만큼 반복\n",(tmp_room_ptr->space_count - target_count) );
+        printf("[제거] %d 만큼 반복\n", (tmp_room_ptr->space_count - target_count));
         int count; //remove
         int add_count = tmp_room_ptr->space_count - target_count;
         for (count = 0; count < add_count; count++) {
@@ -244,7 +244,7 @@ void change_space(building *building_list) {
             tmp_room_ptr->space_count--;
         }
     } else if (tmp_room_ptr->space_count < target_count) {
-        printf("[추가] %d 만큼 반복\n",(target_count - tmp_room_ptr->space_count) );
+        printf("[추가] %d 만큼 반복\n", (target_count - tmp_room_ptr->space_count));
         int count; //add
         int add_count = target_count - tmp_room_ptr->space_count;
         for (count = 0; count < add_count; count++) {
@@ -259,16 +259,61 @@ void change_space(building *building_list) {
 
             space_ptr new_space_ptr = (space *) malloc(sizeof(space));
             new_space_ptr->user = (char *) malloc(strlen(&user_name + 1));
-            
+
             //strcpy(new_space_ptr->user, &user_name);
             strcpy(new_space_ptr->user, user_name);
 
             new_space_ptr->space_next = tmp_room_ptr->space_head;
             tmp_room_ptr->space_head = new_space_ptr;
             tmp_room_ptr->space_count++;
-            printf("입주자 : %s\n",new_space_ptr->user);
-            printf("%d \n",count );
+            printf("입주자 : %s\n", new_space_ptr->user);
+            printf("%d \n", count);
         }
+    }
+}
+
+void change_name(building *building_list) {
+    int target_floor, target_room, target_count;
+    printf("몇 층 입니까? 1 ~ %d 층\n", building_list->floor_count);
+    scanf("%d", &target_floor);
+    floor_ptr tmp_floor_ptr = building_list->floor_head;
+    int index = 0;
+    for (index = 0; index < building_list->floor_count; index++) {
+        if (target_floor == tmp_floor_ptr->floor_id) {
+            break;
+        }
+        tmp_floor_ptr = tmp_floor_ptr->floor_next;
+    }
+    printf("몇 호 입니까? 1 ~ %d 호\n", tmp_floor_ptr->room_count);
+    scanf("%d", &target_room);
+    room_ptr tmp_room_ptr = tmp_floor_ptr->room_head;
+    for (index = 0; index < tmp_floor_ptr->room_count; index++) {
+        if (target_room == tmp_room_ptr->room_id) {
+            break;
+        }
+        tmp_room_ptr = tmp_room_ptr->room_next;
+    }
+
+    while (1) {
+        printf("몇 칸 입니까? 1 ~ 4 칸 [현재] : %d 칸 \n", tmp_room_ptr->space_count);
+        scanf("%d", &target_count);
+        if (target_count >= 1 && target_count <= 4) {
+            break;
+        } else {
+            printf("다시 입력 해주세요.\n");
+        }
+    }
+
+    int count;
+    space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
+    for(count = 0; count < tmp_room_ptr->space_count; count++){
+        if((count+1) == target_count){
+            char *user_name;
+            printf("입주자 이름을 입력하세요.\n");
+            scanf("%s", &user_name);
+            strcpy(tmp_space_ptr->user, &user_name);
+        }
+        tmp_space_ptr = tmp_space_ptr->space_next;
     }
 }
 
@@ -305,7 +350,7 @@ int main() {
                 break;
             }
             case 4: { // [4] 칸 별 사람 이름 변환
-
+                change_name(building_list);
                 break;
             }
             case 5: { // [5] 종료
@@ -321,29 +366,27 @@ int main() {
 
 /*
 
-단층에 방 3개 짜리 건물로 시작하여 높고 넓은 건물을 만드는 것을 목표로 한다.
-건물은 다음과 같은 성질을 가진다.
-- 건물은 층을 늘릴 수도, 방을 늘리는 것도 가능하다.
-- 무한히 늘릴 수 있다.
-방은 다음과 같은 성질을 가진다.
-- 각 방의 호수(번호)를 가진다.
-- 하나의 방은 최대 4칸까지 쪼개질 수 있다.
-- 한 칸에 한 사람 씩 살 수 있다.
-- 각 방에는 1인 이상 살고 있어야 한다.
-화면에 표시되어야 하는 정보는 다음과 같다.
-- 현재 방의 숫자
-- 현재 건물에 살고 있는 사람의 수
-- 전체 방 보여주기 (건물 전체 View)
-- 특정 방 내부 보여주기 (방 내부 View)
-입력을 통해 수행되어야 하는 기능은 다음과 같다.
-- 건물 확장 (층, 칸)
-- View 변환 (건물 보기, 특정 방 보기)
-- 방 별 칸 변환 (1~4개)
-- 칸 별 사람 이름 변환
-전체 정보 조회에서 방 안의 사람까지 보여주기
-사는 사람 위치 검색
-로그 기록
-
-TTS(Text to Speach)
+o 단층에 방 3개 짜리 건물로 시작하여 높고 넓은 건물을 만드는 것을 목표로 한다.
+o 건물은 다음과 같은 성질을 가진다.
+o - 건물은 층을 늘릴 수도, 방을 늘리는 것도 가능하다.
+o - 무한히 늘릴 수 있다.
+o 방은 다음과 같은 성질을 가진다.
+o - 각 방의 호수(번호)를 가진다.
+o - 하나의 방은 최대 4칸까지 쪼개질 수 있다.
+o - 한 칸에 한 사람 씩 살 수 있다.
+o - 각 방에는 1인 이상 살고 있어야 한다.
+o 화면에 표시되어야 하는 정보는 다음과 같다.
+o - 현재 방의 숫자
+o - 현재 건물에 살고 있는 사람의 수
+x - 전체 방 보여주기 (건물 전체 View)
+x - 특정 방 내부 보여주기 (방 내부 View)
+o 입력을 통해 수행되어야 하는 기능은 다음과 같다.
+o - 건물 확장 (층, 칸)
+x - View 변환 (건물 보기, 특정 방 보기)
+o - 방 별 칸 변환 (1~4개)
+o - 칸 별 사람 이름 변환
+x 사는 사람 위치 검색
+x 로그 기록
+x TTS(Text to Speach)
 
 */
