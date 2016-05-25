@@ -31,7 +31,7 @@ typedef struct _room {
     space_ptr space_head; // 칸 리스트
 } room;
 
-typedef room *room_ptr; // Room Ponter
+typedef room *room_ptr; // Room Pointer
 
 typedef struct _floor {
     int floor_id; // 층
@@ -63,6 +63,7 @@ void init(building *building_ptr) {
 }
 
 int input_cmd() {
+
     while (1) {
         int cmd = 0;
         printf("\n기능을 선택하세요 [메인]\n");
@@ -75,21 +76,21 @@ int input_cmd() {
         printf("[7] 종료\n");
         if (tts_flag) {
             system("pico2wave -w test.wav \" Choose Option. Main, Building Expansion.\" ");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"1, building expansion. \" ");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"2, translate view.\" ");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"3, change section for each room.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"4, change person for each section.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"5, search person.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"6, text to speach on or off.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"7, exit program.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
         }
         scanf("%d", &cmd);
         if (cmd >= 1 && cmd <= 7) {
@@ -98,7 +99,7 @@ int input_cmd() {
             printf("다시 입력해 주세요.\n");
             if (tts_flag){
                 system("pico2wave -w test.wav \"Try again.\"");
-                system("aplay test.wav");
+                system("aplay -q test.wav");
             }
         }
     }
@@ -113,13 +114,13 @@ int input_extend_cmd() {
         printf("[3] 뒤로가기\n");
         if (tts_flag) {
             system("pico2wave -w test.wav \" Choose Option. Main, Building Expansion.\" ");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"1, add floor to this building.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"2, add room to specific floor.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"3, Go back to previous option.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
         }
         scanf("%d", &cmd);
         if (cmd >= 1 && cmd <= 3) {
@@ -128,7 +129,7 @@ int input_extend_cmd() {
             printf("다시 입력해 주세요.\n");
             if (tts_flag){
                 system("pico2wave -w test.wav \"Try again.\"");
-                system("aplay test.wav");
+                system("aplay -q test.wav");
             }
         }
     }
@@ -143,13 +144,13 @@ int input_view_cmd() {
         printf("[3] 뒤로가기\n");
         if (tts_flag) {
             system("pico2wave -w test.wav \"Choose Option. Main, Translate View.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"1, entire view of building.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"2, specific view of room.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             system("pico2wave -w test.wav \"3, Go back to previous option.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
         }
         scanf("%d", &cmd);
         if (cmd >= 1 && cmd <= 3) {
@@ -158,7 +159,7 @@ int input_view_cmd() {
             printf("다시 입력해 주세요.\n");
             if (tts_flag){
                 system("pico2wave -w test.wav \"Try again.\"");
-                system("aplay test.wav");
+                system("aplay -q test.wav");
             }
         }
     }
@@ -211,17 +212,17 @@ void view_building(building *building_list, int msg) {
         char buff[256];
         sprintf(buff, "pico2wave -w test.wav \"There are %d residents.\"", total_user_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
 
         sprintf(buff, "pico2wave -w test.wav \"There are %d sections.\"", total_space_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
 
         sprintf(buff, "pico2wave -w test.wav \"There are %d rooms.\"", total_room_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
     }
 }
@@ -258,7 +259,7 @@ void add_room(building *building_list, int msg) {
         printf("생성된 층이 없습니다.\n");
         if (tts_flag) {
             system("pico2wave -w test.wav \"There is no added floor.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
         }
     } else {
         int target_floor;
@@ -271,7 +272,7 @@ void add_room(building *building_list, int msg) {
                             "pico2wave -w test.wav \"Current floor number is %d. Which floor you wanted to add room?\"",
                             building_list->floor_count);
                     system(buff);
-                    system("aplay test.wav");
+                    system("aplay -q test.wav");
                     memset(buff, '\0', 256);
                 }
                 scanf("%d", &target_floor);
@@ -281,7 +282,7 @@ void add_room(building *building_list, int msg) {
                     printf("현재 층 수를 초과하였습니다. 다시 입력해 주세요.\n");
                     if (tts_flag) {
                         system("pico2wave -w test.wav \"Floor number exceeded. Try again.\"");
-                        system("aplay test.wav");
+                        system("aplay -q test.wav");
                     }
                 }
             }
@@ -310,7 +311,7 @@ void add_room(building *building_list, int msg) {
                     printf("입주자 이름을 입력하세요.\n");
                     if (tts_flag) {
                         system("pico2wave -w test.wav \"Input resident's name.\"");
-                        system("aplay test.wav");
+                        system("aplay -q test.wav");
                     }
                     scanf("%s", &user_name);
                 }
@@ -349,12 +350,12 @@ void add_floor(building *building_list, int msg) {
         printf("현재 층 수 : %d층\n", building_list->floor_count);
         if (tts_flag) {
             system("pico2wave -w test.wav \"Adding floor complete.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
 
             sprintf(buff, "pico2wave -w test.wav \"Currently, this building is %d level.\"",
                     building_list->floor_count);
             system(buff);
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             memset(buff, '\0', 256);
 
         }
@@ -370,7 +371,7 @@ void change_space(building *building_list) {
     if (tts_flag) {
         sprintf(buff, "pico2wave -w test.wav \"On a scale of 1 to %d, which floor?\"", building_list->floor_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
     }
     scanf("%d", &target_floor);
@@ -387,7 +388,7 @@ void change_space(building *building_list) {
         sprintf(buff, "pico2wave -w test.wav \"On a scale of 1 to %d, What's the room number?\"",
                 building_list->floor_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
 
 
@@ -405,7 +406,7 @@ void change_space(building *building_list) {
         printf("몇 칸 입니까? 1 ~ 4 칸 [현재] : %d칸 \n", tmp_room_ptr->space_count);
         if (tts_flag) {
             system("pico2wave -w test.wav \"On a scale of 1 to 4, how many serctions in this room?\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
         }
         scanf("%d", &target_count);
         if (target_count >= 1 && target_count <= 4) {
@@ -414,7 +415,7 @@ void change_space(building *building_list) {
             printf("다시 입력 해주세요.\n");
             if (tts_flag) {
                 system("pico2wave -w test.wav \"Try again.\"");
-                system("aplay test.wav");
+                system("aplay -q test.wav");
             }
         }
     }
@@ -422,7 +423,7 @@ void change_space(building *building_list) {
         printf("그대로 유지합니다.\n");
         if (tts_flag) {
             system("pico2wave -w test.wav \"maintain the condition.\"");
-            system("aplay test.wav");
+            system("aplay -q test.wav");
         }
     } else if (tmp_room_ptr->space_count > target_count) {
         printf("[제거] %d 만큼 반복\n", (tmp_room_ptr->space_count - target_count));
@@ -474,7 +475,7 @@ void change_name(building *building_list) {
         sprintf(buff, "pico2wave -w test.wav \"On a scale of 1 to %d, What is the floor number?\"",
                 building_list->floor_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
     }
     scanf("%d", &target_floor);
@@ -491,7 +492,7 @@ void change_name(building *building_list) {
         sprintf(buff, "pico2wave -w test.wav \"On a scale of 1 to %d, What is the room number?\"",
                 tmp_floor_ptr->room_count);
         system(buff);
-        system("aplay test.wav");
+        system("aplay -q test.wav");
         memset(buff, '\0', 256);
     }
     scanf("%d", &target_room);
@@ -510,7 +511,7 @@ void change_name(building *building_list) {
             sprintf(buff, "pico2wave -w test.wav \"On a scale of 1 to %d, How many sections the room has?\"",
                     tmp_room_ptr->space_count);
             system(buff);
-            system("aplay test.wav");
+            system("aplay -q test.wav");
             memset(buff, '\0', 256);
 
 
@@ -522,7 +523,7 @@ void change_name(building *building_list) {
             printf("다시 입력 해주세요.\n");
             if (tts_flag) {
                 system("pico2wave -w test.wav \"Input the resident's name.\"");
-                system("aplay test.wav");
+                system("aplay -q test.wav");
             }
         }
     }
@@ -535,7 +536,7 @@ void change_name(building *building_list) {
             printf("입주자 이름을 입력하세요.\n");
             if (tts_flag) {
                 system("pico2wave -w test.wav \"Input the resident's name.\"");
-                system("aplay test.wav");
+                system("aplay -q test.wav");
             }
             scanf("%s", &user_name);
             strcpy(tmp_space_ptr->user, &user_name);
@@ -551,7 +552,7 @@ void search_name(building *building_list) {
     printf("입주자 이름을 입력하세요.\n");
     if (tts_flag) {
         system("pico2wave -w test.wav \"Input the resident's name.\"");
-        system("aplay test.wav");
+        system("aplay -q test.wav");
     }
     scanf("%s", &user_name);
 
@@ -618,9 +619,9 @@ int main() {
                     printf("층과 호수를 입력하세요\n");
                     if (tts_flag) {
                         system("pico2wave -w test.wav \"Translated the view into the specific room viewing.\"");
-                        system("aplay test.wav");
+                        system("aplay -q test.wav");
                         system("pico2wave -w test.wav \"Input floor number and room number\"");
-                        system("aplay test.wav");
+                        system("aplay -q test.wav");
                     }
                     scanf("%d %d", &target_floor, &target_room);
                     view_flag = 0;
@@ -628,7 +629,7 @@ int main() {
                     printf("전체 방 보여주기 로 View가 변환되었습니다.\n");
                     if (tts_flag) {
                         system("pico2wave -w test.wav \"Translated the view into the total room viewing.\"");
-                        system("aplay test.wav");
+                        system("aplay -q test.wav");
                     }
                     view_flag = 1;
                 }
@@ -653,7 +654,7 @@ int main() {
                 } else {
                     printf("TTS를 사용합니다.\n");
                     system("pico2wave -w test.wav \"From now, Use text to speach.\"");
-                    system("aplay test.wav");
+                    system("aplay -q test.wav");
                     tts_flag = 1;
                 }
                 break;
@@ -662,7 +663,7 @@ int main() {
                 printf("\n프로그램을 종료합니다.\n");
                 if (tts_flag) {
                     system("pico2wave -w test.wav \"Exit Program.\"");
-                    system("aplay test.wav");
+                    system("aplay -q test.wav");
                 }
                 return 0;
                 break;
@@ -695,7 +696,7 @@ o - View 변환 (건물 보기, 특정 방 보기)
 o - 방 별 칸 변환 (1~4개)
 o - 칸 별 사람 이름 변환
 o 사는 사람 위치 검색
-x 로그 기록
-x TTS(Text to Speach)
+o 로그 기록
+o TTS(Text to Speach)
 
 */
