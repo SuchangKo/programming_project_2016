@@ -239,7 +239,9 @@ void change_space(building *building_list) {
         int count; //remove
         int add_count = tmp_room_ptr->space_count - target_count;
         for (count = 0; count < add_count; count++) {
-
+            space_ptr new_space_ptr = tmp_room_ptr->space_head;
+            tmp_room_ptr->space_head = new_space_ptr->space_next;
+            tmp_room_ptr->space_count--;
         }
     } else if (tmp_room_ptr->space_count < target_count) {
         printf("[추가] %d 만큼 반복\n",(target_count - tmp_room_ptr->space_count) );
