@@ -55,9 +55,10 @@ int input_cmd() {
         printf("[2] View 변환\n");
         printf("[3] 방별 칸 변환\n");
         printf("[4] 칸 별 사람 이름 변환\n");
-        printf("[5] 종료\n");
+        printf("[5] 사람 검색\n");
+        printf("[6] 종료\n");
         scanf("%d", &cmd);
-        if (cmd >= 1 && cmd <= 5) {
+        if (cmd >= 1 && cmd <= 6) {
             return cmd;
         } else {
             printf("다시 입력해 주세요.\n");
@@ -255,8 +256,10 @@ void change_space(building *building_list) {
         int add_count = tmp_room_ptr->space_count - target_count;
         for (count = 0; count < add_count; count++) {
             space_ptr new_space_ptr = tmp_room_ptr->space_head;
+            free(new_space_ptr->user);
             tmp_room_ptr->space_head = new_space_ptr->space_next;
             tmp_room_ptr->space_count--;
+
         }
     } else if (tmp_room_ptr->space_count < target_count) {
         printf("[추가] %d 만큼 반복\n", (target_count - tmp_room_ptr->space_count));
@@ -332,6 +335,29 @@ void change_name(building *building_list) {
     }
 }
 
+void search_name(building *building_list){
+    char *user_name;
+    printf("입주자 이름을 입력하세요.\n");
+    scanf("%s", &user_name);
+
+    int index_floor,index_room,index_space;
+    floor_ptr tmp_floor_ptr = building_list->floor_head;
+    for(index_floor = 0; index_floor < building_list->floor_count; index_floor++){
+        room_ptr tmp_room_ptr = tmp_floor_ptr->room_head;
+        for(index_room = 0; index_room < tmp_floor_ptr->room_count; index_room++){
+            space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
+            for(index_space = 0; index_space < tmp_room_ptr->space_count; index_space++){
+                if(strcmp(&user_name,tmp_space_ptr->user) == 0)
+                    printf("%d층 %d호 %d칸 : %s\n",tmp_floor_ptr->floor_id,tmp_room_ptr->room_id,(index_space+1), tmp_space_ptr->user);
+                tmp_space_ptr = tmp_space_ptr->space_next;
+            }
+            tmp_room_ptr = tmp_room_ptr->room_next;
+        }
+        tmp_floor_ptr = tmp_floor_ptr->floor_next;
+    }
+}
+
+
 int main() {
     building *building_list = (building *) malloc(sizeof(building));
     init(building_list);
@@ -368,7 +394,11 @@ int main() {
                 change_name(building_list);
                 break;
             }
-            case 5: { // [5] 종료
+            case 5: {
+                search_name(building_list);
+                break;
+            }
+            case 6: { // [5] 종료
                 printf("\n프로그램을 종료합니다.\n");
                 return 0;
                 break;
@@ -400,7 +430,7 @@ o - 건물 확장 (층, 칸)
 x - View 변환 (건물 보기, 특정 방 보기)
 o - 방 별 칸 변환 (1~4개)
 o - 칸 별 사람 이름 변환
-x 사는 사람 위치 검색
+o 사는 사람 위치 검색
 x 로그 기록
 x TTS(Text to Speach)
 
