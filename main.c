@@ -111,8 +111,8 @@ void view_building(building *building_list, int msg) {
         for (room_index = 0; room_index < tmp_floor_ptr->room_count; room_index++) {
             space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
             total_space_count += tmp_room_ptr->space_count;
-            tmp[tmp_floor_ptr->floor_id][0] = tmp_room_ptr->room_id;
-            tmp[tmp_floor_ptr->floor_id][1] = tmp_room_ptr->space_count;
+            tmp[tmp_room_ptr->room_id][0] = tmp_room_ptr->room_id;
+            tmp[tmp_room_ptr->room_id][1] = tmp_room_ptr->space_count;
             for (space_index = 0; space_index < tmp_room_ptr->space_count; space_index++) {
                 //printf(" %d칸 : %s ", (space_index+1),tmp_space_ptr->user);
                 if (strlen(tmp_space_ptr->user) > 0) {
@@ -127,7 +127,7 @@ void view_building(building *building_list, int msg) {
         }
         printf("\n");
         for(i = 1; i <= tmp_floor_ptr->room_count; i++) {
-            printf("║%d%02d호 : %d명║", tmp_floor_ptr->floor_id, tmp[tmp_floor_ptr->floor_id][0], tmp[tmp_floor_ptr->floor_id][1]);
+            printf("║%d%02d호 : %d명║", tmp_floor_ptr->floor_id, tmp[i][0], tmp[i][1]);
         }
         printf("\n");
         for(i = 1; i <= tmp_floor_ptr->room_count; i++) {
@@ -141,6 +141,32 @@ void view_building(building *building_list, int msg) {
     printf("현재  공간  수 : %d명\n", total_space_count);
     printf("현재   방   수 : %d명\n", total_room_count);
     printf("\n===============================\n");
+}
+
+void view_room(building *building_list, int target_floor, int target_room) {
+    int floor_index, room_index, space_index;
+    floor_ptr tmp_floor_ptr = building_list->floor_head;
+    for (floor_index = target_floor; floor_index < building_list->floor_count; floor_index++) {
+        tmp_floor_ptr = tmp_floor_ptr->floor_next;
+    }
+    room_ptr tmp_room_ptr = tmp_floor_ptr->room_head;
+    for (room_index = target_room; room_index < tmp_floor_ptr->room_count; room_index++) {
+        /*
+        tmp_space_ptr = tmp_room_ptr->space_head;
+        for (space_index = 0; space_index < tmp_room_ptr->space_count; space_index++) {
+            //printf(" %d칸 : %s ", (space_index+1),tmp_space_ptr->user);
+            tmp_space_ptr = tmp_space_ptr->space_next;
+        }
+        */
+        tmp_room_ptr = tmp_room_ptr->room_next;
+    }
+    space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
+    printf("===============================\n");
+    for (space_index = 0; space_index < tmp_room_ptr->space_count; space_index++) {
+        printf(" %d칸 : %s \n", (space_index+1),tmp_space_ptr->user);
+        tmp_space_ptr = tmp_space_ptr->space_next;
+    }
+    printf("===============================\n");
 }
 
 void add_room(building *building_list, int msg) {
@@ -359,6 +385,8 @@ void search_name(building *building_list){
 
 
 int main() {
+    int target_floor, target_room;
+    int view_flag = 1;
     building *building_list = (building *) malloc(sizeof(building));
     init(building_list);
     add_floor(building_list, FALSE);
@@ -367,7 +395,11 @@ int main() {
     add_room(building_list, FALSE);
 
     while (1) {
-        view_building(building_list, TRUE);
+        if (view_flag)
+            view_building(building_list, TRUE);
+        else {
+            view_room(building_list, target_floor, target_room);
+        }
         switch (input_cmd()) {
             case 1: { // [1] 건물 확장
                 switch (input_extend_cmd()) {
@@ -383,7 +415,15 @@ int main() {
                 break;
             }
             case 2: { // [2] View 변환
-
+                if (view_flag) {
+                    printf("특정 방 내부 보여주기 로 View가 변환되었습니다.\n");
+                    printf("층과 호수를 입력하세요\n");
+                    scanf("%d %d", &target_floor, &target_room);
+                    view_flag = 0;
+                } else {
+                    printf("전체 방 보여주기 로 View가 변환되었습니다.\n");
+                    view_flag = 1;
+                }
                 break;
             }
             case 3: { // [3] 방 별 칸 변환
