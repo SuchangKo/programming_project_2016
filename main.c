@@ -194,7 +194,7 @@ void view_building(building *building_list, int msg) {
         }
         printf("\n");
         for (i = 1; i <= tmp_floor_ptr->room_count; i++) {
-            printf("║%d%02d호 : %d명║", tmp_floor_ptr->floor_id, tmp[i][0], tmp[i][1]);
+            printf("║%d%02d호 : %d칸║", tmp_floor_ptr->floor_id, tmp[i][0], tmp[i][1]);
         }
         printf("\n");
         for (i = 1; i <= tmp_floor_ptr->room_count; i++) {
@@ -246,6 +246,40 @@ void view_room(building *building_list, int target_floor, int target_room) {
     }
     space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
     printf("===============================\n");
+    switch(tmp_room_ptr->space_count) {
+        case 1: {
+            printf("╔═══════════╗\n");
+            printf("║           ║\n");
+            printf("║     1     ║\n");
+            printf("║           ║\n");
+            printf("╚═══════════╝\n");
+            break;
+        }
+        case 2: {
+            printf("╔═════╦═════╗\n");
+            printf("║     ║     ║\n");
+            printf("║  1  ║  2  ║\n");
+            printf("║     ║     ║\n");
+            printf("╚═════╩═════╝\n");
+            break;
+        }
+        case 3: {
+            printf("╔═════╦═════╗\n");
+            printf("║  1  ║  2  ║\n");
+            printf("╠═════╩═════╣\n");
+            printf("║     3     ║\n");
+            printf("╚═══════════╝\n");
+            break;
+        }
+        case 4: {
+            printf("╔═════╦═════╗\n");
+            printf("║  1  ║  2  ║\n");
+            printf("╠═════╬═════╣\n");
+            printf("║  3  ║  4  ║\n");
+            printf("╚═════╩═════╝\n");
+            break;
+        }
+    }
     for (space_index = 0; space_index < tmp_room_ptr->space_count; space_index++) {
         printf(" %d칸 : %s \n", (space_index + 1), tmp_space_ptr->user);
         tmp_space_ptr = tmp_space_ptr->space_next;
@@ -443,10 +477,10 @@ void change_space(building *building_list) {
         int add_count = target_count - tmp_room_ptr->space_count;
         for (count = 0; count < add_count; count++) {
             char *user_name;
-            
+
             printf("입주자 이름을 입력하세요.\n");
             scanf("%s", &user_name);
-            
+
             /*
             char *tmp_name = "\0";
             user_name = (char *) malloc(strlen(tmp_name) + 1);
@@ -534,7 +568,7 @@ void change_name(building *building_list) {
     space_ptr tmp_space_ptr = tmp_room_ptr->space_head;
     for (count = 0; count < tmp_room_ptr->space_count; count++) {
         if ((count + 1) == target_count) {
-            
+
             printf("입주자 이름을 입력하세요.\n");
             if (tts_flag) {
                 system("pico2wave -w test.wav \"Input the resident's name.\"");

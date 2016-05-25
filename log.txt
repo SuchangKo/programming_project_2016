@@ -1,7 +1,7 @@
-[2016-05-26 04:26:49] Start Programm
-[2016-05-26 04:26:49] init building_list
-[2016-05-26 04:26:49] [add_floor] now_floor = 1
-[2016-05-26 04:26:49] [add_room] 1F 1Room = Suchang
-[2016-05-26 04:26:49] [add_room] 1F 2Room = Suchang
-[2016-05-26 04:26:49] [add_room] 1F 3Room = Suchang
-[2016-05-26 04:27:07] [change_space] 1F 1Room -> 4Space : R¨
+[2016-05-26 04:41:14] Start Programm
+[2016-05-26 04:41:14] init building_list
+[2016-05-26 04:41:14] [add_floor] now_floor = 1
+[2016-05-26 04:41:14] [add_room] 1F 1Room = Suchang
+[2016-05-26 04:41:14] [add_room] 1F 2Room = Suchang
+[2016-05-26 04:41:14] [add_room] 1F 3Room = Suchang
+[2016-05-26 04:41:27] [change_name] 1F 1Room -> 1Space : jinwook
