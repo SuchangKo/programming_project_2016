@@ -327,14 +327,15 @@ void add_room(building *building_list, int msg) {
                 new_room_ptr->space_count++;
                 if (msg == TRUE)
                     printf("입주자 : %s\n", new_space_ptr->user);
+                log_time();
+                fprintf(fp, "[add_room] %dF %dRoom = %s\n", target_floor, tmp_floor_ptr->room_count,new_space_ptr->user);
                 break;
             }
             tmp_floor_ptr = tmp_floor_ptr->floor_next;
         }
         if (msg == TRUE)
             printf("%d 층의 방 수 : %d개\n", target_floor, tmp_floor_ptr->room_count);
-        log_time();
-        fprintf(fp, "[add_room] %dF %dRoom = %d\n", target_floor, tmp_floor_ptr->room_count);
+
     }
 }
 
